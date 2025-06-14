@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Molina - Restaurante Premium de Pescados Frescos</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>tailwind.config={theme:{extend:{colors:{primary:'#1F3A93',secondary:'#F5D76E'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+<style>
+:where([class^="ri-"])::before { content: "\f3c2"; }
+html {
+scroll-behavior: smooth;
+}
+.menu-tab.active {
+background-color: rgba(31, 58, 147, 0.1);
+color: #1F3A93;
+}
+.menu-content {
+opacity: 0;
+transform: translateY(10px);
+transition: all 0.3s ease-in-out;
+}
+.menu-content.active {
+opacity: 1;
+transform: translateY(0);
+}
+body {
+font-family: 'Inter', sans-serif;
+}
+h1, h2, h3, h4, h5, h6 {
+font-family: 'Poppins', sans-serif;
+}
+.logo-text {
+font-family: 'Pacifico', serif;
+}
+.hero-slider {
+height: 100vh;
+position: relative;
+overflow: hidden;
+}
+.slide {
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+opacity: 0;
+transition: opacity 2s ease-in-out;
+background-size: cover;
+background-position: center;
+}
+.slide.active {
+opacity: 1;
+}
+.slide-overlay {
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0, 0, 0, 0.5);
+}
+.dish-gallery {
+overflow-x: auto;
+scroll-snap-type: x mandatory;
+scrollbar-width: none;
+}
+.dish-gallery::-webkit-scrollbar {
+display: none;
+}
+.dish-card {
+scroll-snap-align: start;
+flex: 0 0 85%;
+}
+@media (min-width: 768px) {
+.dish-card {
+flex: 0 0 33.333%;
+}
+}
+.header {
+transition: background-color 0.3s ease;
+}
+.header.scrolled {
+background-color: white;
+box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+.mobile-menu {
+transform: translateX(100%);
+transition: transform 0.3s ease-in-out;
+}
+.mobile-menu.open {
+transform: translateX(0);
+}
+.animate-fade-in {
+opacity: 0;
+transform: translateY(20px);
+transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.animate-fade-in.visible {
+opacity: 1;
+transform: translateY(0);
+}
+.slide-indicators button {
+width: 10px;
+height: 10px;
+border-radius: 50%;
+background-color: rgba(255, 255, 255, 0.5);
+margin: 0 5px;
+padding: 0;
+border: none;
+cursor: pointer;
+transition: background-color 0.3s ease;
+}
+.slide-indicators button.active {
+background-color: white;
+transform: scale(1.2);
+}
+.gallery-controls button {
+background-color: rgba(255, 255, 255, 0.8);
+width: 40px;
+height: 40px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+border: none;
+cursor: pointer;
+transition: background-color 0.3s ease;
+}
+.gallery-controls button:hover {
+background-color: white;
+}
+</style>
+</head>
+<body class="bg-white">
+<!-- Header -->
+<header class="header fixed top-0 left-0 w-full z-50 px-5 py-3 flex items-center justify-between">
+<div class="w-8 h-8 flex items-center justify-center md:hidden">
+<button id="menuBtn" class="text-white focus:outline-none">
+<i class="ri-menu-line ri-lg"></i>
+</button>
+</div>
+<div class="flex-1 flex justify-center md:justify-start">
+<a href="#" class="logo-text text-white text-2xl md:text-3xl">El Molina</a>
+</div>
+<nav class="hidden md:flex items-center space-x-6">
+<a href="#inicio" class="text-white hover:text-secondary transition-colors font-medium">Inicio</a>
+<a href="#nosotros" class="text-white hover:text-secondary transition-colors font-medium">Nosotros</a>
+<a href="#menu" class="text-white hover:text-secondary transition-colors font-medium">Carta</a>
+<a href="#galeria" class="text-white hover:text-secondary transition-colors font-medium">Galería</a>
+<a href="#contacto" class="text-white hover:text-secondary transition-colors font-medium">Contacto</a>
+<a href="#reservar" class="bg-secondary text-primary px-4 py-2 !rounded-button font-medium hover:bg-opacity-90 transition-all whitespace-nowrap">Reservar Mesa</a>
+</nav>
+</header>
+<!-- Mobile Menu -->
+<div id="mobileMenu" class="mobile-menu fixed top-0 right-0 h-full w-4/5 bg-primary z-50 p-6 flex flex-col">
+<div class="flex justify-end mb-8">
+<button id="closeMenuBtn" class="text-white focus:outline-none">
+<i class="ri-close-line ri-2x"></i>
+</button>
+</div>
+<nav class="flex flex-col space-y-6">
+<a href="#inicio" class="text-white text-xl font-medium">Inicio</a>
+<a href="#nosotros" class="text-white text-xl font-medium">Nosotros</a>
+<a href="#menu" class="text-white text-xl font-medium">Carta</a>
+<a href="#galeria" class="text-white text-xl font-medium">Galería</a>
+<a href="#contacto" class="text-white text-xl font-medium">Contacto</a>
+<a href="#reservar" class="bg-secondary text-primary px-4 py-3 !rounded-button font-medium text-center mt-4 whitespace-nowrap">Reservar Mesa</a>
+</nav>
+<div class="mt-auto">
+<div class="text-white text-sm mb-2">C. Roda, 1, 30868 Cartagena, Murcia</div>
+<div class="text-white text-sm">Tel: 968 15 02 27</div>
+</div>
+</div>
+<!-- Hero Slider -->
+<section id="inicio" class="hero-slider">
+<div class="slide active">
+<div class="slide-overlay"></div>
+<div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://readdy.ai/api/search-image?query=elegant%20seafood%20restaurant%20interior%20with%20blue%20and%20gold%20accents%2C%20high-end%20dining%20experience%2C%20soft%20lighting%2C%20white%20tablecloths%2C%20coastal%20mediterranean%20atmosphere%2C%20professional%20photography%2C%20high%20resolution&width=1200&height=800&seq=1&orientation=landscape');"></div>
+</div>
+<div class="slide">
+<div class="slide-overlay"></div>
+<div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://readdy.ai/api/search-image?query=premium%20fresh%20fish%20dish%20beautifully%20plated%20on%20white%20porcelain%2C%20garnished%20with%20herbs%20and%20lemon%2C%20professional%20food%20photography%2C%20soft%20natural%20lighting%2C%20elegant%20restaurant%20setting%2C%20gourmet%20seafood&width=1200&height=800&seq=2&orientation=landscape');"></div>
+</div>
+<div class="slide">
+<div class="slide-overlay"></div>
+<div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://readdy.ai/api/search-image?query=coastal%20spanish%20restaurant%20terrace%20with%20sea%20view%2C%20elegant%20outdoor%20dining%20setup%2C%20blue%20mediterranean%20sea%2C%20white%20tablecloths%2C%20sunset%20lighting%2C%20professional%20photography%2C%20luxury%20dining%20experience&width=1200&height=800&seq=3&orientation=landscape');"></div>
+</div>
+<div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+<h1 class="text-4xl md:text-6xl font-bold text-white mb-6 max-w-3xl">Pescado fresco, sabor auténtico</h1>
+<p class="text-white text-lg md:text-xl mb-8 max-w-2xl">Experiencia gastronómica premium con los mejores pescados de la lonja de Cartagena</p>
+<div class="flex flex-col sm:flex-row gap-4">
+<a href="#reservar" class="bg-secondary text-primary px-6 py-3 !rounded-button font-medium text-lg hover:bg-opacity-90 transition-all whitespace-nowrap">Reservar Mesa</a>
+<a href="#menu" class="bg-transparent border-2 border-white text-white px-6 py-3 !rounded-button font-medium text-lg hover:bg-white hover:bg-opacity-10 transition-all whitespace-nowrap">Ver Carta</a>
+</div>
+</div>
+<div class="slide-indicators absolute bottom-8 left-0 right-0 flex justify-center">
+<button class="active" data-index="0"></button>
+<button data-index="1"></button>
+<button data-index="2"></button>
+</div>
+</section>
+<!-- Nuestra Historia Section -->
+<section id="nosotros" class="py-16 px-5 md:px-10 lg:px-20">
+<div class="max-w-6xl mx-auto">
+<div class="text-center mb-12 animate-fade-in">
+<h2 class="text-3xl md:text-4xl font-semibold text-primary mb-2">Nuestra Historia</h2>
+<div class="w-20 h-1 bg-secondary mx-auto mb-6"></div>
+</div>
+<div class="flex flex-col md:flex-row items-center gap-10 mb-16">
+<div class="w-full md:w-1/2 animate-fade-in">
+<div class="relative overflow-hidden rounded-lg aspect-video">
+<video class="w-full h-full object-cover" autoplay loop muted playsinline>
+<source src="your-video-source.mp4" type="video/mp4">
+</video>
+</div>
+</div>
+<div class="w-full md:w-1/2 animate-fade-in">
+<p class="text-gray-700 mb-4">Desde 1987, <span class="font-semibold">El Molina</span> ha sido sinónimo de excelencia gastronómica en Cartagena. Nuestro restaurante nació con una misión clara: ofrecer la mejor experiencia con los pescados más frescos de la lonja local.</p>
+<p class="text-gray-700 mb-6">Cada mañana, seleccionamos personalmente las mejores capturas para garantizar que solo lo más fresco llegue a su mesa. Nuestra pasión por el mar y la gastronomía mediterránea se refleja en cada plato que servimos.</p>
+<div class="flex items-center space-x-4">
+<div class="w-12 h-12 flex items-center justify-center rounded-full bg-primary text-white">
+<i class="ri-award-line ri-lg"></i>
+</div>
+<div>
+<h3 class="font-semibold text-gray-900">Calidad Premium</h3>
+<p class="text-gray-600 text-sm">Selección diaria de pescados frescos</p>
+</div>
+</div>
+<div class="flex items-center space-x-4 mt-4">
+<div class="w-12 h-12 flex items-center justify-center rounded-full bg-primary text-white">
+<i class="ri-user-star-line ri-lg"></i>
+</div>
+<div>
+<h3 class="font-semibold text-gray-900">Equipo Experto</h3>
+<p class="text-gray-600 text-sm">Chefs especializados en cocina mediterránea</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Especialidades Section -->
+<section class="py-16 px-5 md:px-10 lg:px-20 bg-gray-50">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-12 animate-fade-in">
+      <h2 class="text-3xl md:text-4xl font-semibold text-primary mb-2">Nuestras Especialidades</h2>
+      <div class="w-20 h-1 bg-secondary mx-auto mb-6"></div>
+    </div>
+
+    <div class="relative w-full overflow-hidden rounded-lg mx-auto shadow-lg h-56 sm:h-64 md:h-72 lg:h-96">
+      <div id="especialidadesSlider" class="w-full h-full relative">
+        <img src="1.png" alt="Especialidad 1" class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000">
+        <img src="2.png" alt="Especialidad 2" class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000">
+        <img src="3.png" alt="Especialidad 3" class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000">
+        <img src="4.png" alt="Especialidad 4" class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000">
+        <img src="5.png" alt="Especialidad 5" class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000">
+        <img src="6.png" alt="Especialidad 6" class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Menu Section -->
+<section id="menu" class="py-16 px-5 md:px-10 lg:px-20 bg-gray-50">
+<div class="max-w-6xl mx-auto">
+<div class="text-center mb-12 animate-fade-in">
+<h2 class="text-3xl md:text-4xl font-semibold text-primary mb-2">Nuestra Carta</h2>
+<div class="w-20 h-1 bg-secondary mx-auto mb-6"></div>
+<p class="text-gray-700 max-w-2xl mx-auto">Descubra nuestra selección de platos elaborados con los mejores ingredientes de temporada.</p>
+</div>
+<div class="flex justify-center mb-8">
+<div class="inline-flex bg-white rounded-full p-1 shadow-md">
+<button class="menu-tab active text-primary bg-primary/10 px-6 py-2 rounded-full text-sm md:text-base font-medium whitespace-nowrap" data-tab="entrantes">Entrantes</button>
+<button class="menu-tab px-6 py-2 rounded-full text-sm md:text-base font-medium text-gray-600 hover:text-primary whitespace-nowrap" data-tab="pescados">Pescados</button>
+<button class="menu-tab px-6 py-2 rounded-full text-sm md:text-base font-medium text-gray-600 hover:text-primary whitespace-nowrap" data-tab="carnes">Carnes</button>
+<button class="menu-tab px-6 py-2 rounded-full text-sm md:text-base font-medium text-gray-600 hover:text-primary whitespace-nowrap" data-tab="arroces">Arroces</button>
+</div>
+</div>
+<div class="menu-content active" id="entrantes">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="bg-white rounded-lg p-6 shadow-md">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-xl font-semibold text-gray-900">Gambas al Ajillo</h3>
+<span class="text-primary font-semibold">16,50 €</span>
+</div>
+<p class="text-gray-700">Gambas frescas salteadas con ajo, guindilla y aceite de oliva virgen extra</p>
+</div>
+<div class="bg-white rounded-lg p-6 shadow-md">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-xl font-semibold text-gray-900">Calamares a la Romana</h3>
+<span class="text-primary font-semibold">14,00 €</span>
+</div>
+<p class="text-gray-700">Calamares frescos rebozados con nuestra receta especial</p>
+</div>
+<div class="bg-white rounded-lg p-6 shadow-md">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-xl font-semibold text-gray-900">Ensalada de Bogavante</h3>
+<span class="text-primary font-semibold">24,50 €</span>
+</div>
+<p class="text-gray-700">Bogavante sobre base de lechugas variadas con vinagreta de cítricos</p>
+</div>
+<div class="bg-white rounded-lg p-6 shadow-md">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-xl font-semibold text-gray-900">Croquetas de Marisco</h3>
+<span class="text-primary font-semibold">12,00 €</span>
+</div>
+<p class="text-gray-700">Cremosas croquetas caseras de marisco selecto</p>
+</div>
+</div>
+</div>
+<div class="menu-content hidden" id="pescados">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="bg-white rounded-lg p-6 shadow-md">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-xl font-semibold text-gray-900">Lubina a la Espalda</h3>
+<span class="text-primary font-semibold">28,50 €</span>
+</div>
+<p class="text-gray-700">Lubina fresca abierta y asada con ajada tradicional</p>
+</div>
+<div class="bg-white rounded-lg p-6 shadow-md">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-xl font-semibold text-gray-900">Rodaballo al Horno</h3>
+<span class="text-primary font-semibold">32,00 €</span>
+</div>
+<p class="text-gray-700">Rodaballo salvaje al horno con patatas panaderas y refrito de ajos</p>
+</div>
+<div class="bg-white rounded-lg p-6 shadow-md">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-xl font-semibold text-gray-900">Rape a la Marinera</h3>
+<span class="text-primary font-semibold">26,50 €</span>
+</div>
+<p class="text-gray-700">Rape en salsa marinera con almejas y gambas</p>
+</div>
+<div class="bg-white rounded-lg p-6 shadow-md">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-xl font-semibold text-gray-900">Dorada a la Sal</h3>
+<span class="text-primary font-semibold">25,00 €</span>
+</div>
+<p class="text-gray-700">Dorada entera cocida en costra de sal marina</p>
+</div>
+</div>
+</div>
+<div class="menu-content hidden" id="carnes">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="bg-white rounded-lg p-6 shadow-md">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-xl font-semibold text-gray-900">Solomillo de Ternera</h3>
+<span class="text-primary font-semibold">28,00 €</span>
+</div>
+<p class="text-gray-700">Solomillo de ternera a la parrilla con guarnición de temporada</p>
+</div>
+<div class="bg-white rounded-lg p-6 shadow-md">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-xl font-semibold text-gray-900">Chuletón Madurado</h3>
+<span class="text-primary font-semibold">65,00 €/kg</span>
+</div>
+<p class="text-gray-700">Chuletón de vaca madurada 40 días a la parrilla</p>
+</div>
+<div class="bg-white rounded-lg p-6 shadow-md">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-xl font-semibold text-gray-900">Paletilla de Cordero</h3>
+<span class="text-primary font-semibold">26,50 €</span>
+</div>
+<p class="text-gray-700">Paletilla de cordero lechal asada a baja temperatura</p>
+</div>
+<div class="bg-white rounded-lg p-6 shadow-md">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-xl font-semibold text-gray-900">Presa Ibérica</h3>
+<span class="text-primary font-semibold">24,00 €</span>
+</div>
+<p class="text-gray-700">Presa ibérica a la parrilla con puré de patata trufado</p>
+</div>
+</div>
+</div>
+<div class="menu-content hidden" id="arroces">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="bg-white rounded-lg p-6 shadow-md">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-xl font-semibold text-gray-900">Arroz de Bogavante</h3>
+<span class="text-primary font-semibold">26,00 €/pers</span>
+</div>
+<p class="text-gray-700">Arroz caldoso con bogavante fresco (mín. 2 pers.)</p>
+</div>
+<div class="bg-white rounded-lg p-6 shadow-md">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-xl font-semibold text-gray-900">Paella de Marisco</h3>
+<span class="text-primary font-semibold">22,00 €/pers</span>
+</div>
+<p class="text-gray-700">Paella tradicional con mariscos seleccionados (mín. 2 pers.)</p>
+</div>
+<div class="bg-white rounded-lg p-6 shadow-md">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-xl font-semibold text-gray-900">Arroz Negro</h3>
+<span class="text-primary font-semibold">20,00 €/pers</span>
+</div>
+<p class="text-gray-700">Arroz negro con sepia y alioli casero (mín. 2 pers.)</p>
+</div>
+<div class="bg-white rounded-lg p-6 shadow-md">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-xl font-semibold text-gray-900">Arroz del Señoret</h3>
+<span class="text-primary font-semibold">24,00 €/pers</span>
+</div>
+<p class="text-gray-700">Arroz con mariscos pelados y pescado (mín. 2 pers.)</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Ubicación Section -->
+<section id="contacto" class="py-16 px-5 md:px-10 lg:px-20">
+<div class="max-w-6xl mx-auto">
+<div class="text-center mb-12 animate-fade-in">
+<h2 class="text-3xl md:text-4xl font-semibold text-primary mb-2">Ubicación y Contacto</h2>
+<div class="w-20 h-1 bg-secondary mx-auto mb-6"></div>
+<p class="text-gray-700 max-w-2xl mx-auto">Nos encontramos en una ubicación privilegiada en Cartagena, con vistas al Mediterráneo.</p>
+</div>
+<div class="flex flex-col md:flex-row gap-10">
+<div class="w-full md:w-1/2 animate-fade-in">
+<div class="bg-gray-100 rounded-lg overflow-hidden h-80 md:h-full">
+<div class="bg-gray-100 rounded-lg overflow-hidden h-80 md:h-full">
+  <iframe
+    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3164029.7787997336!2d-3.350617124222942!3d39.24575837012583!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd635ed41aaaaaab%3A0x96293987ea2e7b29!2sRestaurante%20La%20Bodega%20Molina%20La%20Azoh%C3%ADa!5e0!3m2!1ses!2ses!4v1749292355773!5m2!1ses!2ses"
+    width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade">
+  </iframe>
+</div>
+</div>
+</div>
+<div class="w-full md:w-1/2 animate-fade-in">
+<div class="bg-white p-6 md:p-8 rounded-lg shadow-md h-full flex flex-col">
+<h3 class="text-2xl font-semibold text-primary mb-6">Información de Contacto</h3>
+<div class="space-y-6 flex-grow">
+<div class="flex items-start">
+<div class="w-10 h-10 flex items-center justify-center rounded-full bg-primary/10 text-primary mr-4">
+<i class="ri-map-pin-line ri-lg"></i>
+</div>
+<div>
+<h4 class="font-medium text-gray-900 mb-1">Dirección</h4>
+<p class="text-gray-700">C. Roda, 1, 30868 Cartagena, Murcia</p>
+</div>
+</div>
+<div class="flex items-start">
+<div class="w-10 h-10 flex items-center justify-center rounded-full bg-primary/10 text-primary mr-4">
+<i class="ri-phone-line ri-lg"></i>
+</div>
+<div>
+<h4 class="font-medium text-gray-900 mb-1">Teléfono</h4>
+<p class="text-gray-700">968 15 02 27</p>
+</div>
+</div>
+<div class="flex items-start">
+<div class="w-10 h-10 flex items-center justify-center rounded-full bg-primary/10 text-primary mr-4">
+<i class="ri-time-line ri-lg"></i>
+</div>
+<div>
+<h4 class="font-medium text-gray-900 mb-1">Horario</h4>
+<p class="text-gray-700">Martes a Domingo: 13:00 - 16:00 y 20:00 - 23:30</p>
+<p class="text-gray-700">Lunes: Cerrado</p>
+</div>
+</div>
+<div class="flex items-start">
+<div class="w-10 h-10 flex items-center justify-center rounded-full bg-primary/10 text-primary mr-4">
+<i class="ri-mail-line ri-lg"></i>
+</div>
+<div>
+<h4 class="font-medium text-gray-900 mb-1">Email</h4>
+<p class="text-gray-700">info@elmolina.es</p>
+</div>
+</div>
+</div>
+<div class="mt-8">
+<h4 class="font-medium text-gray-900 mb-3">Síguenos</h4>
+<div class="flex space-x-4">
+<a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-primary text-white hover:bg-opacity-90 transition-colors">
+<i class="ri-facebook-fill ri-lg"></i>
+</a>
+<a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-primary text-white hover:bg-opacity-90 transition-colors">
+<i class="ri-instagram-line ri-lg"></i>
+</a>
+<a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-primary text-white hover:bg-opacity-90 transition-colors">
+<i class="ri-tripadvisor-line ri-lg"></i>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="bg-primary text-white py-12 px-5 md:px-10">
+<div class="max-w-6xl mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+<div>
+<a href="#" class="logo-text text-white text-3xl block mb-4">El Molina</a>
+<p class="text-gray-300 mb-6">Restaurante premium especializado en pescados frescos de lonja en Cartagena.</p>
+<div class="flex space-x-4">
+<a href="#" class="text-gray-300 hover:text-secondary transition-colors">
+<i class="ri-facebook-fill ri-lg"></i>
+</a>
+<a href="#" class="text-gray-300 hover:text-secondary transition-colors">
+<i class="ri-instagram-line ri-lg"></i>
+</a>
+<a href="#" class="text-gray-300 hover:text-secondary transition-colors">
+<i class="ri-tripadvisor-line ri-lg"></i>
+</a>
+</div>
+</div>
+<div>
+<h3 class="text-lg font-semibold mb-4">Contacto</h3>
+<ul class="space-y-3">
+<li class="flex items-start">
+<i class="ri-map-pin-line ri-lg mr-3 mt-1"></i>
+<span>C. Roda, 1, 30868 Cartagena, Murcia</span>
+</li>
+<li class="flex items-start">
+<i class="ri-phone-line ri-lg mr-3 mt-1"></i>
+<span>968 15 02 27</span>
+</li>
+<li class="flex items-start">
+<i class="ri-mail-line ri-lg mr-3 mt-1"></i>
+<span>info@elmolina.es</span>
+</li>
+</ul>
+</div>
+<div>
+<h3 class="text-lg font-semibold mb-4">Horario</h3>
+<ul class="space-y-2">
+<li class="flex justify-between">
+<span>Martes - Viernes:</span>
+<span>13:00 - 16:00, 20:00 - 23:30</span>
+</li>
+<li class="flex justify-between">
+<span>Sábado - Domingo:</span>
+<span>13:00 - 16:30, 20:00 - 00:00</span>
+</li>
+<li class="flex justify-between">
+<span>Lunes:</span>
+<span>Cerrado</span>
+</li>
+</ul>
+</div>
+</div>
+<div class="border-t border-gray-700 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center">
+<p class="text-gray-400 text-sm mb-4 md:mb-0">© 2025 El Molina. Todos los derechos reservados.</p>
+<div class="flex space-x-6">
+<a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Política de Privacidad</a>
+<a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Términos y Condiciones</a>
+<a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Aviso Legal</a>
+</div>
+</div>
+</div>
+</footer>
+<script id="headerScroll">
+document.addEventListener('DOMContentLoaded', function() {
+const header = document.querySelector('.header');
+const menuBtn = document.getElementById('menuBtn');
+window.addEventListener('scroll', function() {
+if (window.scrollY > 50) {
+header.classList.add('scrolled');
+menuBtn.classList.remove('text-white');
+menuBtn.classList.add('text-primary');
+} else {
+header.classList.remove('scrolled');
+menuBtn.classList.remove('text-primary');
+menuBtn.classList.add('text-white');
+}
+});
+});
+</script>
+<script id="mobileMenuToggle">
+document.addEventListener('DOMContentLoaded', function() {
+const menuBtn = document.getElementById('menuBtn');
+const closeMenuBtn = document.getElementById('closeMenuBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+menuBtn.addEventListener('click', function() {
+mobileMenu.classList.add('open');
+document.body.style.overflow = 'hidden';
+});
+closeMenuBtn.addEventListener('click', function() {
+mobileMenu.classList.remove('open');
+document.body.style.overflow = '';
+});
+// Close menu when clicking on a link
+const mobileLinks = mobileMenu.querySelectorAll('a');
+mobileLinks.forEach(link => {
+link.addEventListener('click', function() {
+mobileMenu.classList.remove('open');
+document.body.style.overflow = '';
+});
+});
+});
+</script>
+<script id="heroSlider">
+document.addEventListener('DOMContentLoaded', function() {
+const slides = document.querySelectorAll('.slide');
+const indicators = document.querySelectorAll('.slide-indicators button');
+let currentSlide = 0;
+function showSlide(index) {
+slides.forEach(slide => slide.classList.remove('active'));
+indicators.forEach(indicator => indicator.classList.remove('active'));
+slides[index].classList.add('active');
+indicators[index].classList.add('active');
+currentSlide = index;
+}
+function nextSlide() {
+let next = currentSlide + 1;
+if (next >= slides.length) next = 0;
+showSlide(next);
+}
+// Set up indicator clicks
+indicators.forEach(indicator => {
+indicator.addEventListener('click', function() {
+const slideIndex = parseInt(this.getAttribute('data-index'));
+showSlide(slideIndex);
+});
+});
+// Auto advance slides
+setInterval(nextSlide, 5000);
+});
+</script>
+<script id="menuTabs">
+document.addEventListener('DOMContentLoaded', function() {
+const tabs = document.querySelectorAll('.menu-tab');
+const contents = document.querySelectorAll('.menu-content');
+tabs.forEach(tab => {
+tab.addEventListener('click', () => {
+const target = tab.getAttribute('data-tab');
+tabs.forEach(t => t.classList.remove('active', 'text-primary', 'bg-primary/10'));
+tab.classList.add('active', 'text-primary', 'bg-primary/10');
+contents.forEach(c => {
+c.classList.add('hidden');
+c.classList.remove('active');
+});
+const targetContent = document.getElementById(target);
+targetContent.classList.remove('hidden');
+setTimeout(() => {
+targetContent.classList.add('active');
+}, 50);
+});
+});
+});
+</script>
+<script id="scrollAnimation">
+document.addEventListener('DOMContentLoaded', function() {
+const animatedElements = document.querySelectorAll('.animate-fade-in');
+const observer = new IntersectionObserver((entries) => {
+entries.forEach(entry => {
+if (entry.isIntersecting) {
+entry.target.classList.add('visible');
+}
+});
+}, {
+threshold: 0.1
+});
+animatedElements.forEach(element => {
+observer.observe(element);
+});
+});
+</script>
+<script id="galleryControls">
+document.addEventListener('DOMContentLoaded', function() {
+const gallery = document.querySelector('.dish-gallery');
+const prevBtn = document.getElementById('galleryPrev');
+const nextBtn = document.getElementById('galleryNext');
+prevBtn.addEventListener('click', function() {
+gallery.scrollBy({ left: -300, behavior: 'smooth' });
+});
+nextBtn.addEventListener('click', function() {
+gallery.scrollBy({ left: 300, behavior: 'smooth' });
+});
+// Auto scroll for gallery
+let scrollInterval;
+function startAutoScroll() {
+scrollInterval = setInterval(() => {
+gallery.scrollBy({ left: 300, behavior: 'smooth' });
+// Reset to beginning if at the end
+if (gallery.scrollLeft + gallery.clientWidth >= gallery.scrollWidth - 50) {
+setTimeout(() => {
+gallery.scrollTo({ left: 0, behavior: 'smooth' });
+}, 1000);
+}
+}, 4000);
+}
+function stopAutoScroll() {
+clearInterval(scrollInterval);
+}
+startAutoScroll();
+gallery.addEventListener('mouseenter', stopAutoScroll);
+gallery.addEventListener('mouseleave', startAutoScroll);
+gallery.addEventListener('touchstart', stopAutoScroll, { passive: true });
+gallery.addEventListener('touchend', startAutoScroll);
+});
+</script>
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+  const slides = document.querySelectorAll('#especialidadesSlider img');
+  let index = 0;
+
+  function showSlide(i) {
+    slides.forEach((slide, idx) => {
+      slide.style.opacity = idx === i ? '1' : '0';
+    });
+  }
+
+  function nextSlide() {
+    index = (index + 1) % slides.length;
+    showSlide(index);
+  }
+
+  showSlide(index);
+  setInterval(nextSlide, 4000); // Cambia cada 4 segundos
+});
+</script>
+
+</body>
+</html>
